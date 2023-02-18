@@ -3,16 +3,16 @@ steps:
   - id  : 'Docker Submit'
     name: 'google/cloud-sdk'
     args: ['gcloud', 'builds', 'submit',
-           '--pack', 'image=${_REGISTRY_NAME}/${_APP_NAME}']
+           '--pack', 'image=${_REGISTRY_NAME}/${_APP_NAME}:${SHORT_SHA}']
 
 #  # Docker Create
 #  - id  : 'Docker Create'
 #    name: 'google/cloud-sdk'
 #    args: ['gcloud', 'beta', 'run', 'jobs', 'create', 'migrate',
-#          '--image', '${_REGISTRY_NAME}/${_APP_NAME}',
+#          '--image', '${_REGISTRY_NAME}/${_APP_NAME}:${SHORT_SHA}',
 #          '--region', '${_REGION}',
 #          '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-#          '--set-secrets', '/config/.env=${_APP_NAME}',
+#          '--set-secrets', '/config/.env=${_APP_NAME}:${SHORT_SHA}',
 #          '--command', 'launcher',
 #          '--args', '"php artisan migrate"']
 #
@@ -25,10 +25,10 @@ steps:
   - id  : 'Docker Run'
     name: 'google/cloud-sdk'
     args: ['gcloud', 'run', 'deploy', '${_APP_NAME}',
-           '--image', '${_REGISTRY_NAME}/${_APP_NAME}',
-           '--region', '${_ZONE_ID}', '--platform', 'managed',
+           '--image', '${_REGISTRY_NAME}/${_APP_NAME}:${SHORT_SHA}',
+           '--region', '${_REGION}', '--platform', 'managed',
            '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-           '--set-secrets', '/config/.env=${_APP_NAME}',
+           '--set-secrets', '/config/.env=${_APP_NAME}:${SHORT_SHA}',
            '--allow-unauthenticated']
 
 # Store images in Google Artifact Registry
