@@ -2,7 +2,8 @@ steps:
   # Build Container
   - id  : 'Build Container'
     name: 'google/cloud-sdk'
-    args: ['gcloud', 'builds', 'submit', '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
+    args: ['gcloud', 'builds', 'submit',
+           '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
 
   # Deploy to Cloud Run
   - id  : 'Deploy to Cloud Run'
@@ -13,6 +14,20 @@ steps:
            '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
            '--set-secrets', '/config/.env=laravel_settings:latest',
            '--allow-unauthenticated']
+  # Laravel Init
+  - name: 'gcr.io/google-appengine/exec-wrapper'
+    id  : Laravel Init
+    args: [
+      '-i', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
+      '-e', 'DB_CONNECTION=pgsql',
+      '-e', 'DB_SOCKET=/cloudsql/${_INSTANCE_NAME}',
+      '-e', 'DB_PORT=5432',
+      '-e', 'DB_DATABASE=emagang',
+      '-e', 'DB_USERNAME=postgres',
+      '-e', 'DB_PASSWORD=C4ff3L4tt3',
+      '-s', '${_INSTANCE_NAME}'
+#      '--', '/app/scripts/migration.sh'
+    ]
 
 substitutions:
   _APP_NAME: laravel
