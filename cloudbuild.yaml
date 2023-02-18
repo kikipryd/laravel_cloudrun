@@ -1,27 +1,16 @@
 steps:
-  # Docker Submit
-  - id  : 'Docker Submit'
-    name: 'google/cloud-sdk'
-    args: ['gcloud', 'builds', 'push', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
+  # Build Container
+  - id  : 'Build Container'
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}', '.']
 
-#  # Docker Create
-#  - id  : 'Docker Create'
-#    name: 'google/cloud-sdk'
-#    args: ['gcloud', 'beta', 'run', 'jobs', 'create', 'migrate',
-#          '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
-#          '--region', '${_REGION}',
-#          '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-#          '--set-secrets', '/config/.env=laravel_settings:latest',
-#          '--command', 'launcher',
-#          '--args', '"php artisan migrate"']
-#
-#  # Docker Execute
-#  - id  : 'Docker Excecute'
-#    name: 'google/cloud-sdk'
-#    args: ['gcloud', 'beta', 'run', 'jobs', 'execute', 'migrate', '--region', '${_REGION}', '--wait']
+  # Push to Artifact Registry
+  - id  : 'Push to Artifact Registry'
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['push',  '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
 
-  # Docker Run
-  - id  : 'Docker Run'
+  # Deploy to Cloud Run
+  - id  : 'Deploy to Cloud Run'
     name: 'google/cloud-sdk'
     args: ['gcloud', 'run', 'deploy', '${_APP_NAME}',
            '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
