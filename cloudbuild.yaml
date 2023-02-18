@@ -3,7 +3,7 @@ steps:
   - id  : 'Docker Submit'
     name: 'google/cloud-sdk'
     args: ['gcloud', 'builds', 'submit',
-           '--pack', 'image=${_ZONE_ID}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
+           '--pack', 'image=${_REGISTRY_NAME}/${_APP_NAME}']
 
   # Docker Create
   - id  : 'Docker Create'
@@ -11,7 +11,7 @@ steps:
     args: ['gcloud', 'beta', 'run', 'jobs', 'create', 'migrate',
           '--image', '${REGISTRY_NAME}/laravel',
           '--region', '${REGION}',
-          '--set-cloudsql-instances', '${PROJECT_ID}:${REGION}:${INSTANCE_NAME}',
+          '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
           '--set-secrets', '/config/.env=laravel_settings:latest',
           '--command, launcher',
           '--args', "php artisan migrate"]
@@ -25,17 +25,19 @@ steps:
   - id  : 'Docker Run'
     name: 'google/cloud-sdk'
     args: ['gcloud', 'run', 'deploy', '${_APP_NAME}',
-           '--image', '${_ZONE_ID}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
+           '--image', '${_REGISTRY_NAME}/${_APP_NAME}',
            '--region', '${_ZONE_ID}', '--platform', 'managed',
-           '--set-cloudsql-instances' '${PROJECT_ID}:${REGION}:${INSTANCE_NAME}',
+           '--set-cloudsql-instances' '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
            '--set-secrets' '/config/.env=laravel_settings:latest',
            '--allow-unauthenticated']
 
 # Store images in Google Artifact Registry
 images:
-  - ${_ZONE_ID}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}
+  - ${_REGISTRY_NAME}/${_APP_NAME}
 
 substitutions:
-  _ARTIFACT_REGISTRY: emagang-repo
-  _ZONE_ID: us-central1
-  _APP_NAME: laravel
+  _REGISTRY_NAME: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
+  _APP_NAME: laravel:${SHORT_SHA}
+  _REGION: us-central1
+  _INSTANCE_NAME: emagang-pgsql
+
