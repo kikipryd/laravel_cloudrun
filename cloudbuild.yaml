@@ -13,7 +13,7 @@ steps:
           '--region', '${_REGION}',
           '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
           '--set-secrets', '/config/.env=laravel_settings:latest',
-          '--command, launcher',
+          '--command', 'launcher',
           '--args', "php artisan migrate"]
 
   # Docker Execute
@@ -36,8 +36,8 @@ images:
   - ${_REGISTRY_NAME}/${_APP_NAME}
 
 substitutions:
-  _REGISTRY_NAME: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
   _APP_NAME: laravel:${SHORT_SHA}
-  _REGION: us-central1
   _INSTANCE_NAME: emagang-pgsql
+  _REGION: us-central1
+  _REGISTRY_NAME: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
 
