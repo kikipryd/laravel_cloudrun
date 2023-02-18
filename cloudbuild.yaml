@@ -1,13 +1,8 @@
 steps:
   # Build Container
   - id  : 'Build Container'
-    name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}', '.']
-
-  # Push to Artifact Registry
-  - id  : 'Push to Artifact Registry'
-    name: 'gcr.io/cloud-builders/docker'
-    args: ['push',  '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
+    name: 'google/cloud-sdk'
+    args: ['gcloud', 'builds', 'submit', '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
 
   # Deploy to Cloud Run
   - id  : 'Deploy to Cloud Run'
@@ -18,10 +13,6 @@ steps:
            '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
            '--set-secrets', '/config/.env=laravel_settings:latest',
            '--allow-unauthenticated']
-
-# Store images in Google Artifact Registry
-images:
-  - ${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}
 
 substitutions:
   _APP_NAME: laravel
