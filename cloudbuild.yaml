@@ -2,8 +2,7 @@ steps:
   # Docker Submit
   - id  : 'Docker Submit'
     name: 'google/cloud-sdk'
-    args: ['gcloud', 'builds', 'submit',
-           '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
+    args: ['gcloud', 'builds', 'push', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}']
 
 #  # Docker Create
 #  - id  : 'Docker Create'
