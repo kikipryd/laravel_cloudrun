@@ -12,7 +12,7 @@ steps:
 #          '--image', '${_REGISTRY_NAME}/${_APP_NAME}:${SHORT_SHA}',
 #          '--region', '${_REGION}',
 #          '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-#          '--set-secrets', '/config/.env=${_APP_NAME}:${SHORT_SHA}',
+#          '--set-secrets', '/config/.env=laravel_settings:latest',
 #          '--command', 'launcher',
 #          '--args', '"php artisan migrate"']
 #
@@ -28,7 +28,7 @@ steps:
            '--image', '${_REGISTRY_NAME}/${_APP_NAME}:${SHORT_SHA}',
            '--region', '${_REGION}', '--platform', 'managed',
            '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-           '--set-secrets', '/config/.env=${_APP_NAME}:${SHORT_SHA}',
+           '--set-secrets', '/config/.env=laravel_settings:latest',
            '--allow-unauthenticated']
 
 # Store images in Google Artifact Registry
