@@ -23,6 +23,6 @@ images:
   - ${_ZONE_ID}-docker.pkg.dev/${PROJECT_ID}/${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}
 
 substitutions:
-  _ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/gcp-docker-example/emagang-repo
+  _ARTIFACT_REGISTRY: emagang-repo
   _ZONE_ID: us-central1
   _APP_NAME: laravel
