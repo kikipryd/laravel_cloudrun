@@ -4,22 +4,22 @@ steps:
     name: 'google/cloud-sdk'
     args: ['gcloud', 'builds', 'submit',
            '--pack', 'image=${_REGISTRY_NAME}/${_APP_NAME}']
-#
+
 #  # Docker Create
 #  - id  : 'Docker Create'
 #    name: 'google/cloud-sdk'
 #    args: ['gcloud', 'beta', 'run', 'jobs', 'create', 'migrate',
-#          '--image', '${_REGISTRY_NAME}/laravel',
+#          '--image', '${_REGISTRY_NAME}/${_APP_NAME}',
 #          '--region', '${_REGION}',
 #          '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-#          '--set-secrets', '/config/.env=laravel_settings:latest',
+#          '--set-secrets', '/config/.env=${_APP_NAME}',
 #          '--command', 'launcher',
-#          '--args', "php artisan migrate"]
-
-  # Docker Execute
-  - id  : 'Docker Excecute'
-    name: 'google/cloud-sdk'
-    args: ['gcloud', 'beta', 'run', 'jobs', 'execute', 'migrate', '--region', '${_REGION}', '--wait']
+#          '--args', '"php artisan migrate"']
+#
+#  # Docker Execute
+#  - id  : 'Docker Excecute'
+#    name: 'google/cloud-sdk'
+#    args: ['gcloud', 'beta', 'run', 'jobs', 'execute', 'migrate', '--region', '${_REGION}', '--wait']
 
   # Docker Run
   - id  : 'Docker Run'
