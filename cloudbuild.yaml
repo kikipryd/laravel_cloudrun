@@ -28,7 +28,7 @@ steps:
            '--image', '${_REGISTRY_NAME}/${_APP_NAME}',
            '--region', '${_ZONE_ID}', '--platform', 'managed',
            '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-           '--set-secrets', '/config/.env=laravel_settings:latest',
+           '--set-secrets', '/config/.env=${_APP_NAME}',
            '--allow-unauthenticated']
 
 # Store images in Google Artifact Registry
@@ -36,7 +36,7 @@ images:
   - ${_REGISTRY_NAME}/${_APP_NAME}
 
 substitutions:
-  _APP_NAME: laravel:${SHORT_SHA}
+  _APP_NAME: laravel
   _INSTANCE_NAME: emagang-pgsql
   _REGION: us-central1
   _REGISTRY_NAME: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
