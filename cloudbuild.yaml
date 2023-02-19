@@ -27,9 +27,9 @@ steps:
     args: [
       'gcloud', 'run', 'deploy', '${_APP_NAME}',
       '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
-      '--region=${_REGION}', '--platform=managed',
-      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets=/config/.env=${_SETTING_NAME}:latest'
+      '--region=${_REGION}', '--platform=managed'
+#      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
+#      '--set-secrets=/config/.env=${_SETTING_NAME}:latest'
     ]
 
 substitutions:
