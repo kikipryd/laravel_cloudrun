@@ -36,4 +36,4 @@ substitutions:
   _INSTANCE_NAME: emagang-pgsql
   _REGION: us-central1
   _SETTING_NAME: laravel_settings
-  _ARTIFACT_REGISTRY: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
+  _ARTIFACT_REGISTRY: gcr.io/${PROJECT_ID}
