@@ -9,7 +9,7 @@ steps:
   - id  : Create Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'jobs', 'create', 'migrate',
+      'gcloud', 'beta', 'run', 'jobs', 'create', '${_APP_NAME}-migrate:${SHORT_SHA}',
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
       '--region', '${_REGION}',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
@@ -21,7 +21,7 @@ steps:
   - id  : Excecute Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'execute', 'migrate', '--region', '${_REGION}', '--wait'
+      'gcloud', 'beta', 'run', 'execute', '${_APP_NAME}-migrate:${SHORT_SHA}', '--region', '${_REGION}', '--wait'
     ]
 
   - id  : Deploy to Cloud Run
