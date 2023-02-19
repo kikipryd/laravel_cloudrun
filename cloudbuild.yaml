@@ -27,6 +27,7 @@ steps:
       '--region=${_REGION}', '--platform=managed',
       '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
       '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
+      '--port=8080',
       '--allow-unauthenticated'
     ]
 
