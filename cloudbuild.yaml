@@ -8,7 +8,7 @@ steps:
   - id  : Add Secret Policy
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'secrets' 'add-iam-policy-binding', '${_APP_NAME}-secret-${SHORT_SHA}',
+      'gcloud', 'secrets', 'add-iam-policy-binding', '${_APP_NAME}-secret-${SHORT_SHA}',
         '--member', 'serviceAccount:${_PROJECTNUM}-compute@developer.gserviceaccount.com',
         '--role', 'roles/secretmanager.secretAccessor'
     ]
