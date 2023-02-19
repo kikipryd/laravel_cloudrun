@@ -1,8 +1,16 @@
 steps:
-  - id  : Setup Region
+  - id  : Create Secret
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'config', 'set', 'run/region', '${_REGION}'
+      'gcloud', 'secrets', 'create', '${_APP_NAME}-secret-${SHORT_SHA}', '--data-file', '.env'
+    ]
+
+  - id  : Add Secret Policy
+    name: 'google/cloud-sdk'
+    args: [
+      'gcloud', 'secrets' 'add-iam-policy-binding', '${_APP_NAME}-secret-${SHORT_SHA}',
+        '--member', 'serviceAccount:${_PROJECTNUM}-compute@developer.gserviceaccount.com',
+        '--role', 'roles/secretmanager.secretAccessor'
     ]
 
   - id  : Build Container
@@ -17,8 +25,9 @@ steps:
     args: [
       'gcloud', 'beta', 'run', 'jobs', 'create', '${_APP_NAME}-migrate-${SHORT_SHA}',
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
+      '--region', '${_REGION}',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
+      '--set-secrets', '/config/.env=${_SETTING_NAME}',
       '--command', 'launcher',
       '--args', '"php artisan migrate"'
     ]
@@ -26,7 +35,7 @@ steps:
   - id  : Excecute Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'jobs', 'execute', '${_APP_NAME}-migrate-${SHORT_SHA}', '--wait'
+      'gcloud', 'beta', 'run', 'jobs', 'execute', '${_APP_NAME}-migrate-${SHORT_SHA}', '--region', '${_REGION}', '--wait'
     ]
 
   - id  : Deploy to Cloud Run
@@ -34,9 +43,9 @@ steps:
     args: [
       'gcloud', 'run', 'deploy', '${_APP_NAME}',
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
-      '--platform', 'managed',
+      '--region', '${_REGION}', '--platform', 'managed',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
+      '--set-secrets', '/config/.env=${_SETTING_NAME}',
       '--allow-unauthenticated'
     ]
 
@@ -46,4 +55,4 @@ substitutions:
   _REGION: us-central1
   _SETTING_NAME: laravel_settings
   _ARTIFACT_REGISTRY: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
-
+  _PROJECTNUM: $(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
