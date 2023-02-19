@@ -9,11 +9,11 @@ steps:
   - id  : Create Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'jobs', 'update', '${_APP_NAME}-migrate-${SHORT_SHA}',
+      'gcloud', 'beta', 'run', 'jobs', 'update', 'migrate',
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
       '--region', '${_REGION}',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=${_SETTING_NAME}',
+      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
       '--command', 'launcher',
       '--args', '"php artisan migrate"'
     ]
@@ -21,7 +21,7 @@ steps:
   - id  : Excecute Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'jobs', 'execute', '${_APP_NAME}-migrate-${SHORT_SHA}', '--region', '${_REGION}', '--wait'
+      'gcloud', 'beta', 'run', 'jobs', 'execute', 'migrate', '--region', '${_REGION}', '--wait'
     ]
 
   - id  : Deploy to Cloud Run
@@ -31,7 +31,7 @@ steps:
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
       '--region', '${_REGION}', '--platform', 'managed',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=${_SETTING_NAME}',
+      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
       '--allow-unauthenticated'
     ]
 
@@ -41,4 +41,3 @@ substitutions:
   _REGION: us-central1
   _SETTING_NAME: laravel_settings
   _ARTIFACT_REGISTRY: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
-  _PROJECTNUM: '567833207589'
