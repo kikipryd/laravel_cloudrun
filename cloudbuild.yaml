@@ -1,18 +1,4 @@
 steps:
-  - id  : Create Secret
-    name: 'google/cloud-sdk'
-    args: [
-      'gcloud', 'secrets', 'create', '${_APP_NAME}-secret-${SHORT_SHA}', '--data-file', '.env'
-    ]
-
-  - id  : Add Secret Policy
-    name: 'google/cloud-sdk'
-    args: [
-      'gcloud', 'secrets', 'add-iam-policy-binding', '${_APP_NAME}-secret-${SHORT_SHA}',
-        '--member', 'serviceAccount:${_PROJECTNUM}-compute@developer.gserviceaccount.com',
-        '--role', 'roles/secretmanager.secretAccessor'
-    ]
-
   - id  : Build Container
     name: 'google/cloud-sdk'
     args: [
@@ -23,7 +9,7 @@ steps:
   - id  : Create Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'jobs', 'create', '${_APP_NAME}-migrate-${SHORT_SHA}',
+      'gcloud', 'beta', 'run', 'jobs', 'update', '${_APP_NAME}-migrate-${SHORT_SHA}',
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
       '--region', '${_REGION}',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
