@@ -1,24 +1,34 @@
 steps:
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/${_APP_NAME}:$COMMIT_SHA', '.']
-  # Push the container image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/${_APP_NAME}:$COMMIT_SHA']
-  # Deploy container image to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - '${_APP_NAME}'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/${_APP_NAME}:$COMMIT_SHA'
-      - '--region'
-      - 'REGION'
-images:
-  - 'gcr.io/$PROJECT_ID/${_APP_NAME}:$COMMIT_SHA'
+  - id  : Build Container
+    name: 'google/cloud-sdk'
+    args: [
+      'gcloud', 'builds', 'submit',
+      '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA'
+    ]
 
+  - id  : Execute Migration
+    name: 'google/cloud-sdk'
+    args: [
+      'gcloud', 'beta', 'run', 'jobs', 'update', 'migrate',
+      '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
+      '--region=${_REGION}',
+      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
+      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
+      '--command=launcher',
+      '--args="php artisan migrate"',
+      '--execute-now'
+    ]
+
+  - id  : Deploy to Cloud Run
+    name: 'google/cloud-sdk'
+    args: [
+      'gcloud', 'run', 'deploy', '${_APP_NAME}',
+      '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
+      '--region=${_REGION}', '--platform=managed',
+      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
+      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
+      '--allow-unauthenticated'
+    ]
 
 substitutions:
   _APP_NAME: laravel
