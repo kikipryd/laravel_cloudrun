@@ -25,7 +25,7 @@ steps:
       '-e', 'DB_DATABASE=emagang',
       '-e', 'DB_USERNAME=postgres',
       '-e', 'DB_PASSWORD=C4ff3L4tt3',
-      '-s', '${_INSTANCE_NAME}'
+      '-s', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}'
 #      '--', '/app/scripts/migration.sh'
     ]
 
