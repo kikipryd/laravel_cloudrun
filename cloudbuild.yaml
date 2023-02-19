@@ -6,21 +6,21 @@ steps:
       '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA'
     ]
 
-  - id  : Execute Migration
-    name: 'google/cloud-sdk'
-    args: [
-      'gcloud', 'beta', 'run', 'jobs', 'update', 'migrate',
-      '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
-      '--region=${_REGION}',
-      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
-      '--command=launcher',
-      '--args="[
-        php artisan migrate,
-        php artisan cache:clear
-      "',
-      '--execute-now'
-    ]
+#  - id  : Execute Migration
+#    name: 'google/cloud-sdk'
+#    args: [
+#      'gcloud', 'beta', 'run', 'jobs', 'update', 'migrate',
+#      '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
+#      '--region=${_REGION}',
+#      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
+#      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
+#      '--command=launcher',
+#      '--args="[
+#        php artisan migrate,
+#        php artisan cache:clear
+#      "',
+#      '--execute-now'
+#    ]
 
   - id  : Deploy to Cloud Run
     name: 'google/cloud-sdk'
@@ -29,8 +29,7 @@ steps:
       '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:$COMMIT_SHA',
       '--region=${_REGION}', '--platform=managed',
       '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
-      '--allow-unauthenticated'
+      '--set-secrets=/config/.env=${_SETTING_NAME}:latest'
     ]
 
 substitutions:
