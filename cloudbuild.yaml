@@ -15,7 +15,7 @@ steps:
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
       '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
       '--command', 'launcher',
-      '--allow-unauthenticated'
+      '--args', '"php artisan migrate"'
     ]
 
   - id  : Excecute Migration
@@ -31,7 +31,7 @@ steps:
       '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
       '--region', '${_REGION}', '--platform', 'managed',
       '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=:${_SETTING_NAME}:latest',
+      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
       '--allow-unauthenticated'
     ]
 
