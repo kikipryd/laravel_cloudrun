@@ -21,7 +21,7 @@ steps:
   - id  : Excecute Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'beta', 'run', 'execute', '${_APP_NAME}-migrate-${SHORT_SHA}', '--region', '${_REGION}', '--wait'
+      'gcloud', 'beta', 'run', 'jobs', 'execute', '${_APP_NAME}-migrate-${SHORT_SHA}', '--region', '${_REGION}', '--wait'
     ]
 
   - id  : Deploy to Cloud Run
