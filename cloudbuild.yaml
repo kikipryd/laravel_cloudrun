@@ -55,4 +55,4 @@ substitutions:
   _REGION: us-central1
   _SETTING_NAME: laravel_settings
   _ARTIFACT_REGISTRY: ${_REGION}-docker.pkg.dev/${PROJECT_ID}/emagang-repo
-  _PROJECTNUM: $(gcloud projects describe ${PROJECT_ID} --format='value(projectNumber)')
+  _PROJECTNUM: '567833207589'
