@@ -6,22 +6,17 @@ steps:
       '--pack', 'image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}'
     ]
 
-  - id  : Create Migration
+  - id  : Execute Migration
     name: 'google/cloud-sdk'
     args: [
-      'gcloud', 'alpha', 'run', 'jobs', 'update', 'migrate',
-      '--image', '${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
-      '--region', '${_REGION}',
-      '--set-cloudsql-instances', '${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
-      '--set-secrets', '/config/.env=${_SETTING_NAME}:latest',
-      '--command', 'launcher',
-      '--args', '"php artisan migrate"'
-    ]
-
-  - id  : Excecute Migration
-    name: 'google/cloud-sdk'
-    args: [
-      'gcloud', 'alpha', 'run', 'jobs', 'execute', 'migrate', '--region', '${_REGION}', '--wait'
+      'gcloud', 'beta', 'run', 'jobs', 'update', 'migrate',
+      '--image=${_ARTIFACT_REGISTRY}/${_APP_NAME}:${SHORT_SHA}',
+      '--region=${_REGION}',
+      '--set-cloudsql-instances=${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}',
+      '--set-secrets=/config/.env=${_SETTING_NAME}:latest',
+      '--command=launcher',
+      '--args="php artisan migrate"',
+      '--execute-now'
     ]
 
   - id  : Deploy to Cloud Run
